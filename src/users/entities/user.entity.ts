@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   BeforeUpdate,
   Column,
@@ -21,6 +22,7 @@ export class User {
   username: string;
 
   @Column({ length: 72, nullable: false })
+  @Exclude()
   password: string;
 
   @Column({
@@ -41,16 +43,19 @@ export class User {
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   date_joined: Date;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   last_login: Date;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @Exclude()
   created_at: Date;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  @Exclude()
   updated_at: Date;
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz' })
+  @Exclude()
   deleted_at: Date;
 
   @BeforeUpdate()
