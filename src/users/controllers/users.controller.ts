@@ -3,7 +3,6 @@ import { instanceToPlain } from 'class-transformer';
 import { AdminRoleGuard } from 'src/auth/guards/admin-role.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RequestWithUser } from 'src/auth/interfaces/request-with-user.interface';
-import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
@@ -19,7 +18,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @Get()
-  async getUsers(): Promise<User[]> {
-    return await this.usersService.getAllUsers();
+  async getUsers() {
+    const user = await this.usersService.getAllUsers();
+    return instanceToPlain(user);
   }
 }
