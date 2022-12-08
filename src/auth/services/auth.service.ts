@@ -20,6 +20,13 @@ export class AuthService {
     return await bcrypt.hash(password, 12);
   }
 
+  private async verifyPassword(userPassword: string, hash: string) {
+    const isPasswordMatching = await bcrypt.compare(userPassword, hash);
+    if (!isPasswordMatching) {
+      throw new HttpException('Wrong user credentials', HttpStatus.CONFLICT);
+    }
+  }
+
   public async register(registerDetails: RegisterUserDto): Promise<User> {
     try {
       const hashedPassword = await this.hashPassword(registerDetails.password);
@@ -39,6 +46,17 @@ export class AuthService {
         'Fatal server error',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  public async getAuthenticatedUser(email: string, password: string) {
+    try {
+      let user = await this.usersService.getByEmail(email);
+      await this.verifyPassword(password, user.password);
+      user = await this.usersService.updateLastLogin(user.id);
+      return user;
+    } catch (error) {
+      throw new HttpException('Wrong user credentials', HttpStatus.CONFLICT);
     }
   }
 

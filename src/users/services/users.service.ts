@@ -18,7 +18,7 @@ export class UsersService {
     return `${baseUrl}/${hash}.${query}`;
   }
 
-  async getByEmail(email: string): Promise<User | HttpException> {
+  async getByEmail(email: string): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: { email: email },
     });
@@ -39,5 +39,19 @@ export class UsersService {
     });
     await this.usersRepository.save(newUser);
     return newUser;
+  }
+
+  async updateLastLogin(id: string) {
+    const lastLoginDate = new Date().toISOString();
+    const updateResult = await this.usersRepository
+      .createQueryBuilder('user')
+      .update()
+      .set({ last_login: lastLoginDate })
+      .where('id = :id', { id: id })
+      .execute();
+
+    if (updateResult.affected >= 1) {
+      return await this.usersRepository.findOne({ where: { id: id } });
+    }
   }
 }

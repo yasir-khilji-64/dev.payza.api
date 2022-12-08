@@ -8,7 +8,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('/api/v1', {
-    exclude: [{ path: 'auth/register', method: RequestMethod.POST }],
+    exclude: [
+      { path: 'auth/register', method: RequestMethod.POST },
+      { path: 'auth/login', method: RequestMethod.POST },
+    ],
   });
   try {
     await app.listen(port, () => {
