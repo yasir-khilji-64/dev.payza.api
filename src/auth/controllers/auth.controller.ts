@@ -10,6 +10,7 @@ import {
 import { instanceToPlain } from 'class-transformer';
 import { Response } from 'express';
 import { RegisterUserDto } from '../dtos/register-user.dto';
+import JwtAuthGuard from '../guards/jwt-auth.guard';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { RequestWithUser } from '../interfaces/request-with-user.interface';
 import { AuthService } from '../services/auth.service';
@@ -38,5 +39,12 @@ export class AuthController {
     const cookie = this.authService.getCookieWithJwtToken(user.id, user.role);
     response.setHeader('Set-Cookie', cookie);
     return response.send(instanceToPlain(user));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@Req() request: RequestWithUser, @Res() response: Response) {
+    response.setHeader('Set-Cookie', this.authService.getCookieForLogout());
+    return response.sendStatus(200);
   }
 }

@@ -18,6 +18,17 @@ export class UsersService {
     return `${baseUrl}/${hash}.${query}`;
   }
 
+  async getById(id: string) {
+    const user = await this.usersRepository.findOne({ where: { id: id } });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this email does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
   async getByEmail(email: string): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: { email: email },
