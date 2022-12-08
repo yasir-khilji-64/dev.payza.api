@@ -18,6 +18,14 @@ export class UsersService {
     return `${baseUrl}/${hash}.${query}`;
   }
 
+  async getAllUsers(): Promise<User[]> {
+    try {
+      return await this.usersRepository.find();
+    } catch (error) {
+      throw new HttpException('No users found', HttpStatus.NOT_FOUND);
+    }
+  }
+
   async getById(id: string) {
     const user = await this.usersRepository.findOne({ where: { id: id } });
     if (user) {
