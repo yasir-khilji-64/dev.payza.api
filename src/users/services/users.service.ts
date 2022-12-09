@@ -1,9 +1,10 @@
 import { createHash } from 'crypto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { User } from '../entities/user.entity';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -71,6 +72,52 @@ export class UsersService {
 
     if (updateResult.affected >= 1) {
       return await this.usersRepository.findOne({ where: { id: id } });
+    }
+  }
+
+  async updateUserDetails(
+    id: string,
+    updateDetails: UpdateUserDto,
+  ): Promise<User> {
+    let avatarUrl: string = null;
+    let updateResult: UpdateResult;
+    if (updateDetails.email !== undefined) {
+      avatarUrl = this.generateAvatarUrl(updateDetails.email);
+      updateResult = await this.usersRepository
+        .createQueryBuilder('user')
+        .update()
+        .set({ email: updateDetails.email, avatar_url: avatarUrl })
+        .where('id = :id', { id: id })
+        .execute();
+    }
+    updateResult = await this.usersRepository
+      .createQueryBuilder('user')
+      .update()
+      .set({ username: updateDetails.username })
+      .where('id = :id', { id: id })
+      .execute();
+
+    if (updateResult.affected >= 1) {
+      return await this.usersRepository
+        .createQueryBuilder('user')
+        .select()
+        .where('id = :id', { id: id })
+        .getOne();
+    }
+  }
+
+  async deleteUser(id: string) {
+    const deleteResult = await this.usersRepository
+      .createQueryBuilder('user')
+      .softDelete()
+      .where('id = :id', { id: id })
+      .execute();
+    if (!deleteResult.affected) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    } else {
+      return {
+        message: 'User deleted successfully',
+      };
     }
   }
 }

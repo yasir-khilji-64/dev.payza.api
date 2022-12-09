@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { UserRoles } from 'src/users/entities/user-roles.enum';
 import { RequestWithUser } from '../interfaces/request-with-user.interface';
 
-export class AdminRoleGuard implements CanActivate {
+export class UserIdGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
+    const { id } = context.switchToHttp().getRequest<RequestWithUser>()?.params;
     const { user } = context.switchToHttp().getRequest<RequestWithUser>();
-    if (user.role === UserRoles.ADMIN) {
+    if (id === user.id) {
       return true;
     }
     return false;
