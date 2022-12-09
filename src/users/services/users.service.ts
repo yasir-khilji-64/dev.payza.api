@@ -105,4 +105,19 @@ export class UsersService {
         .getOne();
     }
   }
+
+  async deleteUser(id: string) {
+    const deleteResult = await this.usersRepository
+      .createQueryBuilder('user')
+      .softDelete()
+      .where('id = :id', { id: id })
+      .execute();
+    if (!deleteResult.affected) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    } else {
+      return {
+        message: 'User deleted successfully',
+      };
+    }
+  }
 }

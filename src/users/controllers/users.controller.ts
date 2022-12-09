@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
 import { AdminRoleGuard } from 'src/auth/guards/admin-role.guard';
+import { AdminUserDeleteGuard } from 'src/auth/guards/admin-user-delete.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserIdGuard } from 'src/auth/guards/user-id.guard';
 import { RequestWithUser } from 'src/auth/interfaces/request-with-user.interface';
@@ -44,5 +46,11 @@ export class UsersController {
       updateDetails,
     );
     return instanceToPlain(updateUser);
+  }
+
+  @UseGuards(JwtAuthGuard, AdminUserDeleteGuard)
+  @Delete(':id')
+  async deleteUser(@Param('id') id: string) {
+    return this.usersService.deleteUser(id);
   }
 }
