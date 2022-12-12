@@ -18,17 +18,26 @@
 |     | updated_at  | Datetime              |
 |     | deleted_at  | Datetime              |
 
-## Categories
+## Category Types
 
 | Key | Description | Type          |
 |-----|-------------|---------------|
 | PK  | id          | UUID          |
 |     | name        | String        |
-|     | description | String        |
 |     | created_at  | Datetime      |
 |     | updated_at  | Datetime      |
 |     | deleted_at  | Datetime      |
-| FK  | user_id     | UUID/Null     |
+
+## Category
+
+| Key | Description       | Type          |
+|-----|-------------------|---------------|
+| PK  | id                | UUID          |
+|     | name              | String        |
+|     | created_at        | Datetime      |
+|     | updated_at        | Datetime      |
+|     | deleted_at        | Datetime      |
+| FK  | category_type_id  | UUID          |
 
 ## Transactions
 
