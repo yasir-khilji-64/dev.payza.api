@@ -24,16 +24,19 @@
 |-----|-------------|---------------|
 | PK  | id          | UUID          |
 |     | name        | String        |
+|     | description | String        |
 |     | created_at  | Datetime      |
 |     | updated_at  | Datetime      |
 |     | deleted_at  | Datetime      |
 
-## Category
+## Categories
 
 | Key | Description       | Type          |
 |-----|-------------------|---------------|
 | PK  | id                | UUID          |
 |     | name              | String        |
+|     | description       | String        |
+|     | color             | String        |
 |     | created_at        | Datetime      |
 |     | updated_at        | Datetime      |
 |     | deleted_at        | Datetime      |
