@@ -4,22 +4,29 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Category } from './category.entity';
+import { CategoryType } from './category-type.entity';
 
 @Entity()
-export class CategoryType {
+export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 30, unique: true, nullable: false })
+  @Column({ length: 30, nullable: false, unique: true })
   name: string;
 
   @Column({ nullable: true })
   description: string;
+
+  @Column({ length: 7, default: '#386cac' })
+  color: string;
+
+  @Column({ nullable: false })
+  category_type_id: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   created_at: Date;
@@ -35,6 +42,11 @@ export class CategoryType {
     this.updated_at = new Date();
   }
 
-  @OneToMany(() => Category, (category) => category.category_type)
-  categories: Category[];
+  @ManyToOne(() => CategoryType, (category_type) => category_type.categories, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'category_type_id' })
+  category_type: CategoryType;
 }
