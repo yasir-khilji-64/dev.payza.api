@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Param,
@@ -40,5 +41,11 @@ export class CategoryTypesController {
     @Param('id') id: string,
   ): Promise<CategoryType | HttpException> {
     return this.categoryTypesService.update(id, categoryDetails);
+  }
+
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @Delete(':id')
+  async softDelete(@Param('id') id: string) {
+    return await this.categoryTypesService.softDelete(id);
   }
 }

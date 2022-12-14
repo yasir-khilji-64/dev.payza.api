@@ -1,9 +1,4 @@
-import {
-  IsAlphanumeric,
-  IsNotEmpty,
-  IsOptional,
-  Matches,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, Matches } from 'class-validator';
 
 export class CreateCategoryTypeDto {
   @IsNotEmpty({ message: "Name field can't be left empty" })
@@ -14,6 +9,8 @@ export class CreateCategoryTypeDto {
   name: string;
 
   @IsOptional()
-  @IsAlphanumeric()
+  @Matches(/^[a-zA-Z0-9 ]{0,}$/, {
+    message: 'Description field should be alphanumeric string',
+  })
   description?: string;
 }

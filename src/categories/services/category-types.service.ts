@@ -25,7 +25,7 @@ export class CategoryTypesService {
   async getAll(): Promise<CategoryType[]> {
     return await this.categoryTypesRepository
       .createQueryBuilder('category_type')
-      .select(['id', 'name', 'description', 'created_at'])
+      .select(['id', 'name', 'description', 'created_at', 'updated_at'])
       .execute();
   }
 
@@ -50,5 +50,21 @@ export class CategoryTypesService {
       .select(['id', 'name', 'description', 'created_at', 'updated_at'])
       .where('id = :id', { id: id })
       .execute();
+  }
+
+  async softDelete(id: string) {
+    const deleteResult = await this.categoryTypesRepository
+      .createQueryBuilder('category_type')
+      .softDelete()
+      .where('id = :id', { id: id })
+      .execute();
+
+    if (!deleteResult.affected) {
+      throw new HttpException('Category Type not found', HttpStatus.NOT_FOUND);
+    } else {
+      return {
+        message: 'Category type deleted successfully',
+      };
+    }
   }
 }
